@@ -1,9 +1,10 @@
 import App from './App'
+import Document from './Document'
+
 import React from 'react'
 import { StaticRouter } from 'react-router-dom'
 import express from 'express'
 import { renderToString } from 'react-dom/server'
-import Document from './Document'
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST)
 const server = express()
