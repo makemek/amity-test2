@@ -10,7 +10,8 @@
     "start": "razzle start",
     "build": "razzle build",
     "test": "razzle test --env=jsdom",
-    "start:prod": "NODE_ENV=production node build/server.js"
+    "start:prod": "NODE_ENV=production node build/server.js",
+    "lint": "eslint src"
   },
   "dependencies": {
     "express": "4.17.1",
@@ -19,6 +20,10 @@
     "react-router-dom": "5.2.0"
   },
   "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint": "7.17.0",
+    "eslint-plugin-react": "7.22.0",
+    "lint-staged": "10.5.3",
     "razzle": "3.3.9"
   }
 }
