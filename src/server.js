@@ -9,17 +9,17 @@ const assets = require(process.env.RAZZLE_ASSETS_MANIFEST)
 const server = express()
 
 server.disable('x-powered-by').get('/*', (req, res) => {
-  const context = {}
+  const ctxRouter = {}
   const markup = renderToString(
     <Document assets={assets.client}>
-      <StaticRouter context={context} location={req.url}>
+      <StaticRouter context={ctxRouter} location={req.url}>
         <App />
       </StaticRouter>
     </Document>,
   )
 
-  if (context.url) {
-    return res.redirect(context.url)
+  if (ctxRouter.url) {
+    return res.redirect(ctxRouter.url)
   }
   res.type('html')
   return res.send(markup)
