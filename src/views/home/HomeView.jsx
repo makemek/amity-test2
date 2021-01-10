@@ -1,9 +1,12 @@
-import { makeGraph } from 'modules/delivery'
+import { makeGraph, sumCost } from 'modules/delivery'
 
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { isUndefined } from 'lodash'
 
 export default function HomeView() {
   const inputRef = useRef(null)
+  const inputDeliveryRouteRef = useRef(null)
+  const [resultCost, setResultCost] = useState()
 
   return (
     <>
@@ -18,19 +21,29 @@ export default function HomeView() {
         <h1>Calculate delivery cost</h1>
         <div>
           <div>Route </div>
-          <input type="text" />
+          <input type="text" ref={inputDeliveryRouteRef} />
         </div>
         <button onClick={onCalculateDevlieryCost}>
           Calculate
         </button>
+        {!isUndefined(resultCost) && (
+          <div>
+            {resultCost >= 0 ? resultCost : 'No such route'}
+          </div>
+        )}
       </section>
     </>
   )
 
   function onCalculateDevlieryCost() {
+    const nodes = inputDeliveryRouteRef.current.value.split(
+      '-',
+    )
     const edges = _getTransformInputRoute()
     const graph = makeGraph(edges)
-    console.log(graph)
+    const cost = sumCost(graph, nodes)
+
+    setResultCost(cost)
   }
 
   function _getTransformInputRoute() {
