@@ -6,6 +6,9 @@ import { isUndefined } from 'lodash'
 export default function HomeView() {
   const inputRef = useRef(null)
   const inputDeliveryRouteRef = useRef(null)
+  const sourceRef = useRef(null)
+  const destRef = useRef(null)
+  const costRef = useRef(null)
   const [resultCost, setResultCost] = useState()
 
   return (
@@ -31,6 +34,24 @@ export default function HomeView() {
             {resultCost >= 0 ? resultCost : 'No such route'}
           </div>
         )}
+      </section>
+      <section>
+        <h1>Calculate possible delivery routes</h1>
+        <div>
+          <div>Source </div>
+          <input
+            type="text"
+            ref={sourceRef}
+            maxLength={1}
+          />
+          <div>Destination </div>
+          <input type="text" ref={destRef} maxLength={1} />
+        </div>
+        <div>
+          <div>Maximum Cost </div>
+          <input type="number" ref={costRef} />
+        </div>
+        <button>Calculate</button>
       </section>
     </>
   )
