@@ -51,7 +51,9 @@ export default function HomeView() {
           <div>Maximum Cost </div>
           <input type="number" ref={costRef} />
         </div>
-        <button>Calculate</button>
+        <button onClick={onCalculateDeliveryRoutes}>
+          Calculate
+        </button>
       </section>
     </>
   )
@@ -65,6 +67,14 @@ export default function HomeView() {
     const cost = sumCost(graph, nodes)
 
     setResultCost(cost)
+  }
+
+  function onCalculateDeliveryRoutes() {
+    const sourceNode = sourceRef.current.value
+    const destNode = destRef.current.value
+    const maxCost = costRef.current.value
+    const edges = _getTransformInputRoute()
+    const graph = makeGraph(edges)
   }
 
   function _getTransformInputRoute() {
