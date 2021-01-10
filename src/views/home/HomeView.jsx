@@ -1,3 +1,5 @@
+import { makeGraph } from 'modules/delivery'
+
 import React, { useRef } from 'react'
 
 export default function HomeView() {
@@ -25,5 +27,23 @@ export default function HomeView() {
     </>
   )
 
-  function onCalculateDevlieryCost() {}
+  function onCalculateDevlieryCost() {
+    const edges = _getTransformInputRoute()
+    const graph = makeGraph(edges)
+    console.log(graph)
+  }
+
+  function _getTransformInputRoute() {
+    const routesString = inputRef.current.value
+    const routes = routesString.split(',')
+    const edges = routes.map(
+      ([source, target, ...value]) => [
+        source,
+        target,
+        parseInt(value.join('')),
+      ],
+    )
+
+    return edges
+  }
 }
