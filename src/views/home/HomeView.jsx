@@ -66,15 +66,36 @@ export default function HomeView() {
         </div>
         <div>
           <div>Max stop</div>
-          <input type="number" ref={maxStopRef} min={1} />
+          <input
+            type="number"
+            ref={maxStopRef}
+            min={-1}
+            defaultValue={-1}
+          />
+          <span>-1 means unlimited</span>
         </div>
         <div>
           <div>Maximum Cost </div>
-          <input type="number" ref={costRef} />
+          <input
+            type="number"
+            ref={costRef}
+            min={-1}
+            defaultValue={-1}
+          />
+          <span>-1 means unlimited</span>
         </div>
         <button onClick={onCalculateDeliveryRoutes}>
           Calculate
         </button>
+        <div>Routes are printed in the console</div>
+        <div style={{ marginTop: 20 }}>
+          Is the example output in case 2 input 1 wrong? or
+          am I misunderstand something. If you draw a graph,
+          there are only 3 incomming edges to D. Meaning
+          that there should be no more than 3 for possible
+          routes. But the output expects 4 which is more
+          than D&apos;s incomming edges.
+        </div>
         {!isUndefined(resultRoutes) && (
           <div>{resultRoutes}</div>
         )}
@@ -96,15 +117,15 @@ export default function HomeView() {
   function onCalculateDeliveryRoutes() {
     const source = sourceRef.current.value
     const target = destRef.current.value
-    const maxCost = defaultTo(
-      costRef.current.value,
-      Number.POSITIVE_INFINITY,
-    )
+    const maxCost =
+      costRef.current.value < 0
+        ? Number.POSITIVE_INFINITY
+        : costRef.current.value
     const maxVisit = defaultTo(maxVisitRef.current.value, 1)
-    const maxStop = defaultTo(
-      maxStopRef.current.value,
-      Number.POSITIVE_INFINITY,
-    )
+    const maxStop =
+      maxStopRef.current.value < 0
+        ? Number.POSITIVE_INFINITY
+        : maxStopRef.current.value
     const edges = _getTransformInputRoute()
     const graph = makeGraph(edges)
     const routes = getAllPossibleRoutes({
@@ -123,12 +144,14 @@ export default function HomeView() {
       )
     })
 
-    // TODO filter max cost
-    maxCost
-    // TODO filter max stop
-    maxStop
+    filteredRoutes = filteredRoutes.filter((route) => {
+      const isWithinCost = sumCost(graph, route) <= maxCost
+      const isWithinStop = route.length <= maxStop
+      return isWithinCost && isWithinStop
+    })
 
-    console.log(filteredRoutes)
+    console.log('All routes: ', routes)
+    console.log('Filtered: ', filteredRoutes)
     setResultRoutes(filteredRoutes.length)
   }
 
