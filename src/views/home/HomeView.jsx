@@ -1,7 +1,12 @@
-import { makeGraph, sumCost } from 'modules/delivery'
+import {
+  makeGraph,
+  sumCost,
+  getAllPossibleRoutes,
+  filterRepeatRoute,
+} from 'modules/delivery'
 
 import React, { useRef, useState } from 'react'
-import { isUndefined } from 'lodash'
+import { isUndefined, defaultTo } from 'lodash'
 
 export default function HomeView() {
   const inputRef = useRef(null)
@@ -9,7 +14,10 @@ export default function HomeView() {
   const sourceRef = useRef(null)
   const destRef = useRef(null)
   const costRef = useRef(null)
+  const maxStopRef = useRef(null)
+  const maxVisitRef = useRef(null)
   const [resultCost, setResultCost] = useState()
+  const [resultRoutes, setResultRoutes] = useState()
 
   return (
     <>
@@ -48,12 +56,28 @@ export default function HomeView() {
           <input type="text" ref={destRef} maxLength={1} />
         </div>
         <div>
+          <div>Maximum Visit</div>
+          <input
+            type="number"
+            ref={maxVisitRef}
+            min={1}
+            defaultValue={1}
+          />
+        </div>
+        <div>
+          <div>Max stop</div>
+          <input type="number" ref={maxStopRef} min={1} />
+        </div>
+        <div>
           <div>Maximum Cost </div>
           <input type="number" ref={costRef} />
         </div>
         <button onClick={onCalculateDeliveryRoutes}>
           Calculate
         </button>
+        {!isUndefined(resultRoutes) && (
+          <div>{resultRoutes}</div>
+        )}
       </section>
     </>
   )
@@ -70,11 +94,42 @@ export default function HomeView() {
   }
 
   function onCalculateDeliveryRoutes() {
-    const sourceNode = sourceRef.current.value
-    const destNode = destRef.current.value
-    const maxCost = costRef.current.value
+    const source = sourceRef.current.value
+    const target = destRef.current.value
+    const maxCost = defaultTo(
+      costRef.current.value,
+      Number.POSITIVE_INFINITY,
+    )
+    const maxVisit = defaultTo(maxVisitRef.current.value, 1)
+    const maxStop = defaultTo(
+      maxStopRef.current.value,
+      Number.POSITIVE_INFINITY,
+    )
     const edges = _getTransformInputRoute()
     const graph = makeGraph(edges)
+    const routes = getAllPossibleRoutes({
+      graph,
+      source,
+      target,
+      timesVisit: maxVisit,
+    })
+
+    let filteredRoutes = routes
+    routes.forEach((route) => {
+      filteredRoutes = filterRepeatRoute(
+        filteredRoutes,
+        route,
+        maxVisit,
+      )
+    })
+
+    // TODO filter max cost
+    maxCost
+    // TODO filter max stop
+    maxStop
+
+    console.log(filteredRoutes)
+    setResultRoutes(filteredRoutes.length)
   }
 
   function _getTransformInputRoute() {
