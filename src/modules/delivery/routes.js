@@ -17,8 +17,9 @@ export function getAllPossibleRoutes({
   )
   const results = []
   traverseGraphFn(graph, source, target, results)
-  const routes = results.map((result) =>
-    _extractSubgraph(graph, result),
+  // subgraph with a single node is not a route
+  const routes = results.filter(
+    (result) => result.length > 1,
   )
 
   return routes
