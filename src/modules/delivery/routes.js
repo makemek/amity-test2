@@ -4,6 +4,7 @@
  * An edge represents distance unit between towns.
  */
 import { each, has } from 'lodash'
+import { Graph } from 'graphlib'
 
 export function getAllPossibleRoutes({
   graph,
@@ -16,8 +17,11 @@ export function getAllPossibleRoutes({
   )
   const results = []
   traverseGraphFn(graph, source, target, results)
+  const routes = results.map((result) =>
+    _extractSubgraph(graph, result),
+  )
 
-  return results
+  return routes
 }
 
 /**
@@ -65,4 +69,28 @@ export function _traverseGraphUnlimitSourceVisit(
     trackingNodes.pop()
     visited[curNode] -= 1
   }
+}
+
+export function _extractSubgraph(graph, nodes) {
+  const graphNodes = graph.nodes()
+  const hasAllNodesInGraph = nodes.every((node) =>
+    graphNodes.includes(node),
+  )
+  if (!hasAllNodesInGraph) {
+    return null
+  }
+
+  const outGraph = new Graph()
+  for (let index = 0; index < nodes.length - 1; ++index) {
+    const curNode = nodes[index]
+    const nextNode = nodes[index + 1]
+
+    outGraph.setEdge(
+      curNode,
+      nextNode,
+      graph.edge(curNode, nextNode),
+    )
+  }
+
+  return outGraph
 }

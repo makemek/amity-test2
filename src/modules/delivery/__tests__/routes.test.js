@@ -1,4 +1,7 @@
-import { _traverseGraphUnlimitSourceVisit } from '../routes'
+import {
+  _traverseGraphUnlimitSourceVisit,
+  _extractSubgraph,
+} from '../routes'
 
 import { Graph } from 'graphlib'
 
@@ -118,6 +121,46 @@ describe('routes', () => {
         ['A', 'B', 'A', 'B', 'A'],
         ['A', 'B', 'A', 'B', 'A', 'B', 'A'],
       ])
+    })
+  })
+
+  describe('#_extractSubgraph', () => {
+    it('given non-existing node, should return null', () => {
+      /**
+       * A -> B -> C
+       * ↓
+       * D
+       */
+      const graph = new Graph()
+      graph.setEdge('A', 'B', 1)
+      graph.setEdge('B', 'C', 2)
+      graph.setEdge('A', 'D', 3)
+      const results = _extractSubgraph(graph, [
+        'A',
+        'NOT_NODE',
+        'D',
+      ])
+
+      expect(results).toBeNull()
+    })
+
+    it('given existing node, path is reachable, should return expected graph', () => {
+      /**
+       * A -> B -> C
+       * ↓
+       * D
+       */
+      const graph = new Graph()
+      graph.setEdge('A', 'B', 1)
+      graph.setEdge('B', 'C', 2)
+      graph.setEdge('A', 'D', 3)
+
+      const results = _extractSubgraph(graph, ['A', 'D'])
+      expect(results.hasNode('A')).toBe(true)
+      expect(results.hasNode('D')).toBe(true)
+      expect(results.hasNode('B')).toBe(false)
+      expect(results.hasNode('C')).toBe(false)
+      expect(results.edge('A', 'D')).toEqual(3)
     })
   })
 })
