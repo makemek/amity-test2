@@ -1,9 +1,9 @@
-import { _traverseGraph } from '../routes'
+import { _traverseGraphUnlimitSourceVisit } from '../routes'
 
 import { Graph } from 'graphlib'
 
 describe('routes', () => {
-  describe('#_traverseGraph', () => {
+  describe('#_traverseGraphUnlimitSourceVisit', () => {
     it('given non-existing source and/or target node in the graph, result should be []', () => {
       /**
        * A -> B -> C
@@ -14,16 +14,26 @@ describe('routes', () => {
       const resultsNN = []
       const resultsYN = []
       const resultsNY = []
-      _traverseGraph(1)(
+      _traverseGraphUnlimitSourceVisit(1)(
         graph,
         'NOT_NODE',
         'NOT_NODE',
         resultsNN,
       )
       expect(resultsNN).toEqual([])
-      _traverseGraph(1)(graph, 'A', 'NOT_NODE', resultsYN)
+      _traverseGraphUnlimitSourceVisit(1)(
+        graph,
+        'A',
+        'NOT_NODE',
+        resultsYN,
+      )
       expect(resultsYN).toEqual([])
-      _traverseGraph(1)(graph, 'NOT_NODE', 'A', resultsNY)
+      _traverseGraphUnlimitSourceVisit(1)(
+        graph,
+        'NOT_NODE',
+        'A',
+        resultsNY,
+      )
       expect(resultsNY).toEqual([])
     })
 
@@ -41,8 +51,18 @@ describe('routes', () => {
       const resultsAC = []
       const resultsAE = []
 
-      _traverseGraph(1)(graph, 'A', 'C', resultsAC)
-      _traverseGraph(1)(graph, 'A', 'E', resultsAE)
+      _traverseGraphUnlimitSourceVisit(1)(
+        graph,
+        'A',
+        'C',
+        resultsAC,
+      )
+      _traverseGraphUnlimitSourceVisit(1)(
+        graph,
+        'A',
+        'E',
+        resultsAE,
+      )
 
       expect(resultsAC).toEqual([['A', 'B', 'C']])
       expect(resultsAE).toEqual([])
@@ -61,12 +81,17 @@ describe('routes', () => {
       graph.setEdge('E', 'C', 4)
       const resultsAA = []
 
-      _traverseGraph(1)(graph, 'A', 'A', resultsAA)
+      _traverseGraphUnlimitSourceVisit(1)(
+        graph,
+        'A',
+        'A',
+        resultsAA,
+      )
 
       expect(resultsAA).toEqual([['A']])
     })
 
-    it.skip('given cycles exists, timesVisit > 1, existing curNode and destNode, should have expected result', () => {
+    it('given cycles exists, timesVisit > 1, existing curNode and destNode, should have expected result', () => {
       /**
        * Cycle(s) has to exist in the graph in order to be able to revisit visited nodes
        * A ⇄ B -> C
@@ -81,12 +106,17 @@ describe('routes', () => {
       graph.setEdge('E', 'C', 5)
       const resultsAA = []
 
-      _traverseGraph(3)(graph, 'A', 'A', resultsAA)
+      _traverseGraphUnlimitSourceVisit(3)(
+        graph,
+        'A',
+        'A',
+        resultsAA,
+      )
       expect(resultsAA).toEqual([
         ['A'],
         ['A', 'B', 'A'],
         ['A', 'B', 'A', 'B', 'A'],
-        ['A', 'B', 'A', 'B', 'A', 'B', 'A'], // can revisiting to source be valid even though it exceeds timesVisit by 1?
+        ['A', 'B', 'A', 'B', 'A', 'B', 'A'],
       ])
     })
   })

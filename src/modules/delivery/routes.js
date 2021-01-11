@@ -11,7 +11,9 @@ export function getAllPossibleRoutes({
   target,
   timesVisit = 1,
 }) {
-  const traverseGraphFn = _traverseGraph(timesVisit)
+  const traverseGraphFn = _traverseGraphUnlimitSourceVisit(
+    timesVisit,
+  )
   const results = []
   traverseGraphFn(graph, source, target, results)
 
@@ -21,8 +23,13 @@ export function getAllPossibleRoutes({
 /**
  * modified solution from https://www.geeksforgeeks.org/find-paths-given-source-destination/
  * and graphlib/alg/dfs.js
+ *
+ * Traverse graph using depth-first search algorithm with an exception that
+ * source node can be visited unlimited times.
  */
-export function _traverseGraph(timesVisit) {
+export function _traverseGraphUnlimitSourceVisit(
+  timesVisit,
+) {
   return function dfs(
     graph,
     curNode,
