@@ -95,3 +95,26 @@ export function _extractSubgraph(graph, nodes) {
 
   return outGraph
 }
+
+/**
+ * Remove any specified subgraph within subgraph if exceeds nMaxRepeat.
+ * Only works if all nodes' name has length 1.
+ */
+export function filterRepeatRoute(
+  routes,
+  nodes,
+  nMaxRepeat,
+) {
+  const pattern = nodes.join('')
+  let count = 0
+  const results = routes.filter((route) => {
+    const isInUse = route.join('').includes(pattern)
+    if (isInUse) {
+      ++count
+      return count <= nMaxRepeat
+    }
+    return true
+  })
+
+  return results
+}

@@ -1,6 +1,7 @@
 import {
   _traverseGraphUnlimitSourceVisit,
   _extractSubgraph,
+  filterRepeatRoute,
 } from '../routes'
 
 import { Graph } from 'graphlib'
@@ -161,6 +162,26 @@ describe('routes', () => {
       expect(results.hasNode('B')).toBe(false)
       expect(results.hasNode('C')).toBe(false)
       expect(results.edge('A', 'D')).toEqual(3)
+    })
+  })
+
+  describe('#filterRepeatRoute', () => {
+    it('given existing chars, should filter out repeats', () => {
+      const routes = [
+        ['A', 'B'],
+        ['A', 'B', 'C'],
+        ['A', 'B', 'A', 'B'],
+        ['C', 'A', 'B'],
+        ['A', 'D'],
+      ]
+      const nodes = ['A', 'B']
+      const result = filterRepeatRoute(routes, nodes, 2)
+
+      expect(result).toEqual([
+        ['A', 'B'],
+        ['A', 'B', 'C'],
+        ['A', 'D'],
+      ])
     })
   })
 })
