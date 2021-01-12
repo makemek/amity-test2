@@ -87,6 +87,9 @@ export default function HomeView() {
         <button onClick={onCalculateDeliveryRoutes}>
           Calculate
         </button>
+        {!isUndefined(resultRoutes) && (
+          <div>{resultRoutes}</div>
+        )}
         <div>Routes are printed in the console</div>
         <div style={{ marginTop: 20 }}>
           Is the example output in case 2 input 1 wrong? or
@@ -96,9 +99,6 @@ export default function HomeView() {
           routes. But the output expects 4 which is more
           than D&apos;s incomming edges.
         </div>
-        {!isUndefined(resultRoutes) && (
-          <div>{resultRoutes}</div>
-        )}
       </section>
     </>
   )
