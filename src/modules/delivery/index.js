@@ -1,2 +1,6 @@
-export { makeGraph as makeGraph } from './graph'
-export { sumCost as sumCost } from './cost'
+export { makeGraph } from './graph'
+export { sumCost } from './cost'
+export {
+  getAllPossibleRoutes,
+  filterRepeatRoute,
+} from './routes'
