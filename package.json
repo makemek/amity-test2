@@ -11,7 +11,7 @@
     "build": "razzle build",
     "test": "razzle test --env=jsdom --watchAll=false",
     "start:prod": "NODE_ENV=production node build/server.js",
-    "lint": "eslint src",
+    "lint": "eslint --fix src/**/*.{js,jsx}",
     "prettier": "prettier --write src"
   },
   "husky": {
